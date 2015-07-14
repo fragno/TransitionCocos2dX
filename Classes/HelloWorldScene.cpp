@@ -78,17 +78,46 @@ bool HelloWorld::init()
     arrowSprite->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height - 100 + origin.y));
     this->addChild(arrowSprite, 0);
     
+    
+    auto touchListener = EventListenerTouchOneByOne::create();
+    touchListener->onTouchBegan = CC_CALLBACK_2(HelloWorld::onTouchBegan, this);
+    touchListener->onTouchEnded = CC_CALLBACK_2(HelloWorld::onTouchEnded, this);
+    touchListener->onTouchMoved = CC_CALLBACK_2(HelloWorld::onTouchMoved, this);
+    touchListener->onTouchCancelled = CC_CALLBACK_2(HelloWorld::onTouchCancelled, this);
+    
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
+    
     return true;
 }
 
 
 void HelloWorld::menuCloseCallback(Ref* pSender)
 {
-    CCLOGINFO("HelloWorldScene#onEnter");
-    
     Director::getInstance()->end();
 
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
 }
+
+bool HelloWorld::onTouchBegan(Touch *touch, Event *unused_event)
+{
+    CCLOG("HelloWorldScene#onTouchBegan");
+    return true;
+}
+
+void HelloWorld::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event)
+{
+    CCLOG("HelloWorldScene#onTouchMoved");
+}
+
+void HelloWorld::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event)
+{
+    CCLOG("HelloWorldScene#onTouchEnded");
+}
+
+void HelloWorld::onTouchCancelled(cocos2d::Touch *touch, cocos2d::Event *unused_event)
+{
+    CCLOG("HelloWorldScene#onTouchCancelled");
+}
+
