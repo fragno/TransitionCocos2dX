@@ -1,9 +1,9 @@
-#ifndef __TRANSITION_SCENE_H__
-#define __TRANSITION_SCENE_H__
+#ifndef __GAME_SCENE_H__
+#define __GAME_SCENE_H__
 
 #include "cocos2d.h"
 
-class Transition : public cocos2d::Layer
+class GameMain : public cocos2d::Layer
 {
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
@@ -16,7 +16,7 @@ public:
     void menuCloseCallback(cocos2d::Ref* pSender);
     
     // implement the "static create()" method manually
-    CREATE_FUNC(Transition);
+    CREATE_FUNC(GameMain);
 };
 
-#endif // __TRANSITION_SCENE_H__
+#endif // __GAME_SCENE_H__

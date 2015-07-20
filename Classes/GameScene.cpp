@@ -1,15 +1,16 @@
-#include "TransitionScene.h"
+#include "GameScene.h"
 #include "Element.h"
+#include "ScoreLabel.h"
 
 USING_NS_CC;
 
-Scene* Transition::createScene()
+Scene* GameMain::createScene()
 {
     // 'scene' is an autorelease object
     auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = Transition::create();
+    auto layer = GameMain::create();
 
     // add layer as a child to scene
     scene->addChild(layer);
@@ -19,7 +20,7 @@ Scene* Transition::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool Transition::init()
+bool GameMain::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -30,6 +31,12 @@ bool Transition::init()
     
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
+    
+    // create Score lable
+    auto scoreLabel = ScoreLabel::create();
+    scoreLabel->setPosition(Vec2(origin.x + 24, origin.y + visibleSize.height - 50));
+    this->addChild(scoreLabel);
+    
     
     auto apple_golden = new Element("textures/items/apple_golden.png");
     auto apple = new Element("textures/items/apple.png");
@@ -51,21 +58,11 @@ bool Transition::init()
     this->addChild(barrier, 0);
     this->addChild(bed, 0);
     
-    
-    // add event listener
-    auto touchListener = EventListenerTouchOneByOne::create();
-    touchListener->onTouchBegan = CC_CALLBACK_2(Transition::onTouchBegan, this);
-    touchListener->onTouchEnded = CC_CALLBACK_2(Transition::onTouchEnded, this);
-    touchListener->onTouchMoved = CC_CALLBACK_2(Transition::onTouchMoved, this);
-    touchListener->onTouchCancelled = CC_CALLBACK_2(Transition::onTouchCancelled, this);
-    
-    _eventDispatcher->addEventListenerWithSceneGraphPriority(touchListener, this);
-    
     return true;
 }
 
 
-void Transition::menuCloseCallback(Ref* pSender)
+void GameMain::menuCloseCallback(Ref* pSender)
 {
     Director::getInstance()->end();
 
