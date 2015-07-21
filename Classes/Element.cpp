@@ -8,9 +8,10 @@
 
 #include "Element.h"
 
-Element::Element(const std::string& elementname)
+Element::Element(const unsigned int number, Size size)
 {
-    m_element_name = elementname;
+    m_number = number;
+    m_size = size;
 }
 
 
@@ -19,44 +20,23 @@ Element::~Element()
     // TODO: release
 }
 
-void Element::onEnter()
+
+bool Element::init()
 {
-    Layer::onEnter();
+    if (!Layer::init()) {
+        return false;
+    }
     
-    this->setContentSize(Size(85, 90));
+    Size winSize = Director::getInstance()->getWinSize();
     
-    auto element = Sprite::create(m_element_name);
-    element->setAnchorPoint(Vec2(0.5, 0.5));
-    element->runAction(RepeatForever::create(Sequence::create(RotateBy::create(1.0, 360), NULL)));
+    auto element = Sprite::create();
+    element->setColor(Color3B::BLACK);
+    element->setTextureRect(Rect(0, 0, m_size.width, m_size.height));
+    element->setAnchorPoint(Vec2(0, 0));
+    element->setPosition(Vec2(0, 0));
     addChild(element);
-}
-
-void Element::onExit()
-{
-    Layer::onExit();
     
-}
-
-#pragma mark -
-#pragma mark - touch event
-
-bool Element::onTouchBegan(Touch *touch, Event *unused_event)
-{
-    CCLOG("Element#onTouchBegan, touchPoint: x[%f], y[%f]", touch->getLocation().x, touch->getLocation().y);
+    setContentSize(m_size);
+    
     return true;
-}
-
-void Element::onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event)
-{
-    CCLOG("Element#onTouchMoved");
-}
-
-void Element::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event)
-{
-    CCLOG("Element#onTouchEnded");
-}
-
-void Element::onTouchCancelled(cocos2d::Touch *touch, cocos2d::Event *unused_event)
-{
-    CCLOG("Element#onTouchCancelled");
 }

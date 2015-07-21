@@ -9,6 +9,51 @@
 #ifndef __TransitionCocos2dX__GameField__
 #define __TransitionCocos2dX__GameField__
 
-#include <stdio.h>
+#include "cocos2d.h"
+#include "Element.h"
+
+USING_NS_CC;
+
+enum MoveDirection: unsigned {
+    MoveDirectionNone,
+    MoveDirectionLeft,
+    MoveDirectionRight,
+    MoveDirectionUp,
+    MoveDirectionDown,
+};
+
+#define DIMENSION 4
+
+class GameField : public cocos2d::Layer
+{
+public:
+    GameField();
+    virtual ~GameField(void);
+    
+    virtual bool init(void) override;
+    
+    // touch event
+    virtual bool onTouchBegan(Touch *touch, Event *unused_event) override;
+    virtual void onTouchMoved(Touch *touch, Event *unused_event) override;
+    virtual void onTouchCancelled(Touch *touch, Event *unused_event) override;
+    virtual void onTouchEnded(Touch *touch, Event *unused_event) override;
+    
+    CREATE_FUNC(GameField);
+    
+private:
+    bool addRandomElem();
+    
+    void moveLeft();
+    void moveRight();
+    void moveUp();
+    void moveDown();
+    
+private:
+    Element* elems[DIMENSION][DIMENSION];
+    
+    MoveDirection moveDireciton;
+    bool isPressed;
+    Point touchBeginPoint;
+};
 
 #endif /* defined(__TransitionCocos2dX__GameField__) */

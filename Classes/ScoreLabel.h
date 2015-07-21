@@ -20,8 +20,7 @@ public:
     virtual ~ScoreLabel(void);
     
     // overrides
-    virtual void onEnter() override;
-    virtual void onExit() override;
+    virtual bool init(void) override;
     
     CREATE_FUNC(ScoreLabel);
     

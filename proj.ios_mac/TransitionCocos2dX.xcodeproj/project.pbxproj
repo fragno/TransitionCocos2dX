@@ -70,7 +70,6 @@
 		D6B0611B1803AB670077942B /* CoreMotion.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6B0611A1803AB670077942B /* CoreMotion.framework */; };
 		E81B8FCC1B5B52D80031D1EC /* ScoreLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E81B8FCA1B5B52D80031D1EC /* ScoreLabel.cpp */; };
 		E81B8FCF1B5B52E50031D1EC /* BestLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E81B8FCD1B5B52E50031D1EC /* BestLabel.cpp */; };
-		E81B8FD21B5B52F60031D1EC /* ControlLabel.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E81B8FD01B5B52F60031D1EC /* ControlLabel.cpp */; };
 		E81B8FD51B5B53100031D1EC /* GameField.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E81B8FD31B5B53100031D1EC /* GameField.cpp */; };
 		E8D332E01B5A3EC200FE6FBD /* Element.cpp in Sources */ = {isa = PBXBuildFile; fileRef = E8D332DE1B5A3EC200FE6FBD /* Element.cpp */; };
 /* End PBXBuildFile section */
@@ -170,8 +169,6 @@
 		E81B8FCB1B5B52D80031D1EC /* ScoreLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScoreLabel.h; sourceTree = "<group>"; };
 		E81B8FCD1B5B52E50031D1EC /* BestLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = BestLabel.cpp; sourceTree = "<group>"; };
 		E81B8FCE1B5B52E50031D1EC /* BestLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BestLabel.h; sourceTree = "<group>"; };
-		E81B8FD01B5B52F60031D1EC /* ControlLabel.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ControlLabel.cpp; sourceTree = "<group>"; };
-		E81B8FD11B5B52F60031D1EC /* ControlLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ControlLabel.h; sourceTree = "<group>"; };
 		E81B8FD31B5B53100031D1EC /* GameField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameField.cpp; sourceTree = "<group>"; };
 		E81B8FD41B5B53100031D1EC /* GameField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameField.h; sourceTree = "<group>"; };
 		E8D332DE1B5A3EC200FE6FBD /* Element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Element.cpp; sourceTree = "<group>"; };
@@ -316,8 +313,6 @@
 				E81B8FCB1B5B52D80031D1EC /* ScoreLabel.h */,
 				E81B8FCD1B5B52E50031D1EC /* BestLabel.cpp */,
 				E81B8FCE1B5B52E50031D1EC /* BestLabel.h */,
-				E81B8FD01B5B52F60031D1EC /* ControlLabel.cpp */,
-				E81B8FD11B5B52F60031D1EC /* ControlLabel.h */,
 				E81B8FD31B5B53100031D1EC /* GameField.cpp */,
 				E81B8FD41B5B53100031D1EC /* GameField.h */,
 			);
@@ -534,7 +529,6 @@
 				503AE10017EB989F00D1A890 /* AppController.mm in Sources */,
 				E81B8FD51B5B53100031D1EC /* GameField.cpp in Sources */,
 				E81B8FCF1B5B52E50031D1EC /* BestLabel.cpp in Sources */,
-				E81B8FD21B5B52F60031D1EC /* ControlLabel.cpp in Sources */,
 				E81B8FCC1B5B52D80031D1EC /* ScoreLabel.cpp in Sources */,
 				503AE10217EB989F00D1A890 /* RootViewController.mm in Sources */,
 				503AE10117EB989F00D1A890 /* main.m in Sources */,
@@ -571,7 +565,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: tianfu zhang (DPM839XL32)";
 				COMPRESS_PNG_FILES = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -607,7 +601,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Developer: tianfu zhang (DPM839XL32)";
 				COMPRESS_PNG_FILES = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

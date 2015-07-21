@@ -16,22 +16,15 @@ USING_NS_CC;
 class Element : public cocos2d::Layer
 {
 public:
-    Element(const std::string& elementname);
+    Element(const unsigned int number, const Size size);
     virtual ~Element(void);
     
     // overrides
-    virtual void onEnter() override;
-    virtual void onExit() override;
-    
-    // override event
-    virtual bool onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event) override;
-    virtual void onTouchMoved(cocos2d::Touch *touch, cocos2d::Event *unused_event) override;
-    virtual void onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event) override;
-    virtual void onTouchCancelled(cocos2d::Touch *touch, cocos2d::Event *unused_event) override;
-  
+    virtual bool init(void) override;
     
 private:
-    std::string m_element_name;
+    unsigned int m_number;
+    Size m_size;
 };
 
 #endif /* defined(__TransitionCocos2dX__Element__) */

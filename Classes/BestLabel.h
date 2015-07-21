@@ -9,6 +9,23 @@
 #ifndef __TransitionCocos2dX__BestLabel__
 #define __TransitionCocos2dX__BestLabel__
 
-#include <stdio.h>
+#include "cocos2d.h"
+
+USING_NS_CC;
+
+class BestLabel : public cocos2d::Layer
+{
+public:
+    BestLabel();
+    virtual ~BestLabel(void);
+    
+    // overrides
+    virtual bool init(void) override;
+    
+    CREATE_FUNC(BestLabel);
+    
+private:
+    unsigned int bestScore;
+};
 
 #endif /* defined(__TransitionCocos2dX__BestLabel__) */

@@ -19,21 +19,29 @@ ScoreLabel::~ScoreLabel()
     
 }
 
-void ScoreLabel::onEnter()
+bool ScoreLabel::init()
 {
-    Layer::onEnter();
+    if (!Layer::init()) {
+        return false;
+    }
     
-//    this->setContentSize(Size(Vec2(20, 20)));
-    auto scoreLabel = Sprite::create("textures/gui/demo_background.png");
-    scoreLabel->setScale(0.5);
-    
-    addChild(scoreLabel);
-    
-}
+    // valid anchor point
 
-
-void ScoreLabel::onExit()
-{
-    Layer::onExit();
+    // scoreBg
+    auto scoreBg = Sprite::create("textures/gui/demo_background.png");
+    scoreBg->setScale(0.4, 0.3);
+    scoreBg->setAnchorPoint(Vec2(0,1));
+    
+    // scoreLabel
+    auto scoreLabel = Label::createWithTTF("1024","fonts/Marker Felt.ttf", 200);
+    scoreLabel->setAnchorPoint(Vec2(0.5, 0.5));
+    scoreLabel->setPosition(scoreBg->getContentSize().width/2, scoreBg->getContentSize().height/2 + 150);
+    scoreLabel->setTextColor(Color4B::YELLOW);
+    scoreLabel->setString(std::to_string(score));
+    scoreBg->addChild(scoreLabel);
+    
+    addChild(scoreBg);
+ 
+    return true;
 }
 

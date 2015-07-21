@@ -1,6 +1,8 @@
 #include "GameScene.h"
 #include "Element.h"
 #include "ScoreLabel.h"
+#include "BestLabel.h"
+#include "GameField.h"
 
 USING_NS_CC;
 
@@ -32,42 +34,64 @@ bool GameMain::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
-    // create Score lable
+    // create Score Lable
     auto scoreLabel = ScoreLabel::create();
-    scoreLabel->setPosition(Vec2(origin.x + 24, origin.y + visibleSize.height - 50));
-    this->addChild(scoreLabel);
+    scoreLabel->setAnchorPoint(Vec2(0, 0));
+    scoreLabel->setPosition(Vec2(origin.x, origin.y + visibleSize.height - 10));
+    this->addChild(scoreLabel, 2);
+    
+    // create bestScore Label
+    auto bestScoreLabel = BestLabel::create();
+    bestScoreLabel->setAnchorPoint(Vec2(0, 0));
+    bestScoreLabel->setPosition(Vec2(origin.x + visibleSize.width - 10, origin.y + visibleSize.height - 10));
+    this->addChild(bestScoreLabel, 2);
     
     
-    auto apple_golden = new Element("textures/items/apple_golden.png");
-    auto apple = new Element("textures/items/apple.png");
-    auto arrow = new Element("textures/items/arrow.png");
-    auto barrier = new Element("textures/items/barrier.png");
-    auto bed = new Element("textures/items/bed.png");
+    // restart menu
+    auto restartItem = MenuItemImage::create("textures/gui/demo_background.png", "textures/gui/demo_background.png", CC_CALLBACK_1(GameMain::menuRestartCallback, this));
     
-    // set attrs
-    apple_golden->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y));
-    apple->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y + 100));
-    arrow->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y + 200));
-    barrier->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y - 100));
-    bed->setPosition(Vec2(visibleSize.width/2 + origin.x, visibleSize.height/2 + origin.y - 200));
-
-    // add elem as a child to this layer
-    this->addChild(apple_golden, 0);
-    this->addChild(apple, 0);
-    this->addChild(arrow, 0);
-    this->addChild(barrier, 0);
-    this->addChild(bed, 0);
+    // restart label
+    auto restartLabel = Label::createWithTTF("restart","fonts/Marker Felt.ttf", 200);
+    restartLabel->setAnchorPoint(Vec2(0.5, 0.5));
+    restartLabel->setPosition(restartItem->getContentSize().width/2, restartItem->getContentSize().height/2 + 150);
+    restartLabel->setTextColor(Color4B::YELLOW);
+    restartLabel->setName("restart");
+    restartItem->addChild(restartLabel);
+    
+    restartItem->setScale(0.3, 0.16);
+    restartItem->setAnchorPoint(Vec2(1,1));
+    restartItem->setPosition(bestScoreLabel->getPosition().x, bestScoreLabel->getPosition().y - 92);
+    
+    auto menu = Menu::create(restartItem, NULL);
+    menu->setAnchorPoint(Vec2(0,0));
+    menu->setPosition(Vec2(0,0));
+    addChild(menu, 2);
+    
+    
+    // game field
+    auto gamefield = GameField::create();
+    gamefield->setAnchorPoint(Vec2(0.5,0.5));
+    gamefield->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/2));
+    addChild(gamefield, 0);
     
     return true;
 }
 
 
+void GameMain::menuRestartCallback(Ref* pSender)
+{
+    CCLOG("menu restart clicked");
+    // TODO: add restart logic
+}
+
+// TODO: add close menu
 void GameMain::menuCloseCallback(Ref* pSender)
 {
     Director::getInstance()->end();
-
+    
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
     exit(0);
 #endif
 }
+
 
