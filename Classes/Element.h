@@ -16,15 +16,21 @@ USING_NS_CC;
 class Element : public cocos2d::Layer
 {
 public:
-    Element(const unsigned int number, const Size size);
+    Element();
     virtual ~Element(void);
     
     // overrides
     virtual bool init(void) override;
     
+    // set position
+    void setPosition(int x, int y);
+
+public:
+    int number;
+    
 private:
-    unsigned int m_number;
-    Size m_size;
+    int pos_x;
+    int pos_y;
 };
 
 #endif /* defined(__TransitionCocos2dX__Element__) */

@@ -40,8 +40,12 @@ public:
     
     CREATE_FUNC(GameField);
     
+    // game over
+    void gameOver();
+    
 private:
     bool addRandomElem();
+    void refreshGameField();
     
     void moveLeft();
     void moveRight();
@@ -50,10 +54,12 @@ private:
     
 private:
     Element* elems[DIMENSION][DIMENSION];
+    std::vector<int> emptyElemIndexes;
     
     MoveDirection moveDireciton;
     bool isPressed;
     Point touchBeginPoint;
+    bool isMoved;
 };
 
 #endif /* defined(__TransitionCocos2dX__GameField__) */

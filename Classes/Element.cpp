@@ -8,10 +8,11 @@
 
 #include "Element.h"
 
-Element::Element(const unsigned int number, Size size)
+Element::Element()
 {
-    m_number = number;
-    m_size = size;
+    number = 0;
+    pos_x = 0;
+    pos_y = 0;
 }
 
 
@@ -27,16 +28,12 @@ bool Element::init()
         return false;
     }
     
-    Size winSize = Director::getInstance()->getWinSize();
-    
-    auto element = Sprite::create();
-    element->setColor(Color3B::BLACK);
-    element->setTextureRect(Rect(0, 0, m_size.width, m_size.height));
-    element->setAnchorPoint(Vec2(0, 0));
-    element->setPosition(Vec2(0, 0));
-    addChild(element);
-    
-    setContentSize(m_size);
-    
     return true;
 }
+
+void Element::setPosition(int x, int y)
+{
+    pos_x = x;
+    pos_y = y;
+}
+
