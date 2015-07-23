@@ -69,10 +69,10 @@ bool GameMain::init()
     
     
     // game field
-    auto gamefield = GameField::create();
-    gamefield->setAnchorPoint(Vec2(0.5,0.5));
-    gamefield->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/2));
-    addChild(gamefield, 0);
+    gameField = GameField::create();
+    gameField->setAnchorPoint(Vec2(0.5,0.5));
+    gameField->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/2));
+    addChild(gameField, 0);
     
     return true;
 }
@@ -82,6 +82,7 @@ void GameMain::menuRestartCallback(Ref* pSender)
 {
     CCLOG("menu restart clicked");
     // TODO: add restart logic
+    gameField->init();
 }
 
 // TODO: add close menu

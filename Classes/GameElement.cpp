@@ -29,17 +29,19 @@ bool GameElement::init()
     // valid anchor point
     ignoreAnchorPointForPosition(false);
     
+    Size winSize = Director::getInstance()->getWinSize();
+    sideLen = (winSize.width - 10)/4;
+    gamefield = Sprite::create();
+    gamefield->setColor(Color3B::WHITE);
+    addChild(gamefield);
+    
     return true;
 }
 
 
-void GameElement::updateElementWithPosAndNumber(const int x, const int y, const int number)
+void GameElement::updateElement(Element *elem)
 {
-    Size winSize = Director::getInstance()->getWinSize();
-    float sideLen = (winSize.width - 10)/4;
-    
-    Sprite *gamefield = Sprite::create();
-    switch (number) {
+    switch (elem->number) {
         case 0:
             gamefield->setColor(Color3B::WHITE);
             break;
@@ -89,17 +91,23 @@ void GameElement::updateElementWithPosAndNumber(const int x, const int y, const 
     }
     gamefield->setTextureRect(Rect(0, 0, sideLen, sideLen));
     gamefield->setAnchorPoint(Vec2(0.5,0.5));
-    gamefield->setPosition(Vec2((x+1)*sideLen, (4-y)*sideLen));
+    gamefield->setPosition(Vec2((elem->pos_x+1)*sideLen, (4-elem->pos_y)*sideLen));
     
     // add number
     auto numberLabel = Label::createWithTTF("","fonts/Marker Felt.ttf", 50);
     numberLabel->setAnchorPoint(Vec2(0.5, 0.5));
     numberLabel->setPosition(gamefield->getContentSize().width/2, gamefield->getContentSize().height/2);
     numberLabel->setTextColor(Color4B::BLACK);
-    numberLabel->setString(std::to_string(number));
+    numberLabel->setString(std::to_string(elem->number));
     gamefield->addChild(numberLabel);
     
-    addChild(gamefield);
+    // add animation
+    if (elem->isNew) {
+        auto action = Sequence::createWithTwoActions(ScaleTo::create(0, 0), ScaleTo::create(0.3f, 1));  //在0.3秒内从小缩放到大
+        gamefield->runAction(action);
+        elem->isNew = false;
+    }
+    
     setContentSize(gamefield->getContentSize());
 }
 

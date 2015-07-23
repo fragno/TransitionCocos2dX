@@ -11,19 +11,7 @@
 
 GameField::GameField()
 {
-    moveDireciton = MoveDirectionNone;
-    isPressed = false;
-    isMoved = false;
-    touchBeginPoint = Point(0, 0);
     
-    emptyElemIndexes.clear();
-    for (int i=0; i<DIMENSION; i++) {
-        for (int j=0; j<DIMENSION; j++) {
-            emptyElemIndexes.push_back(j*DIMENSION+i);
-            elems[i][j] = new Element();
-            elems[i][j]->setPosition(i, j);
-        }
-    }
 }
 
 
@@ -40,6 +28,30 @@ bool GameField::init()
     
     // valid anchor point
     ignoreAnchorPointForPosition(false);
+    
+    moveDireciton = MoveDirectionNone;
+    isPressed = false;
+    isMoved = false;
+    touchBeginPoint = Point(0, 0);
+    
+    emptyElemIndexes.clear();
+    for (int i=0; i<DIMENSION; i++) {
+        for (int j=0; j<DIMENSION; j++) {
+            emptyElemIndexes.push_back(j*DIMENSION+i);
+            elems[i][j] = new Element();
+            elems[i][j]->setPosition(i, j);
+            
+            GameElement *gameElem = new GameElement();
+            gameElem->init();
+            gameElemsAction[i][j] = gameElem;
+            
+            addChild(gameElem,2);
+            
+            // 隐藏
+            auto hide = Hide::create();
+            gameElemsAction[i][j]->runAction(hide);
+        }
+    }
     
     Size winSize = Director::getInstance()->getWinSize();
     
@@ -68,7 +80,7 @@ bool GameField::init()
 }
 
 
-#pragma mark - 
+#pragma mark -
 #pragma mark - move action
 
 void GameField::moveLeft()
@@ -80,6 +92,15 @@ void GameField::moveLeft()
                 if (elems[i-1][j]->number == 0) {
                     elems[i-1][j]->number = elems[i][j]->number;
                     elems[i][j]->number = 0;
+                    
+                    //专门弄一个动画层卡片实现定位、显现、移动、隐藏系列动画
+                    gameElemsAction[i][j]->updateElement(elems[i-1][j]);
+                    auto place = Place::create(Point(gameElems[i][j]->getBoundingBox().size.width, gameElems[i][j]->getBoundingBox().size.height-185));
+                    auto show = Show::create();
+                    auto move = MoveBy::create(1.0f, Point(-gameElems[i][j]->getContentSize().width, 0));  //注意移动的距离
+                    auto hide = Hide::create();
+                    gameElemsAction[i][j]->runAction(Sequence::create(place, show, move, hide, NULL));
+                    
                     isMoved = true;
                     moveLeft();
                     
@@ -191,6 +212,7 @@ bool GameField::addRandomElem()
     CCLOG("randomIndex: %d", randomIndex);
     
     elems[randomIndex%DIMENSION][randomIndex/DIMENSION]->number = number;
+    elems[randomIndex%DIMENSION][randomIndex/DIMENSION]->isNew = true;
     
     for (int j=0; j<DIMENSION; j++) {
         for (int i=0; i<DIMENSION; i++) {
@@ -207,12 +229,14 @@ bool GameField::addRandomElem()
 
 void GameField::refreshGameField()
 {
-    removeAllChildren();
     for (int i=0; i<DIMENSION; i++) {
         for (int j=0; j<DIMENSION; j++) {
-                GameElement *gameElem = GameElement::create();
-                gameElem->updateElementWithPosAndNumber(i, j, elems[i][j]->number);
-                addChild(gameElem);
+            removeChild(gameElems[i][j]);
+            GameElement *gameElem = GameElement::create();
+            gameElem->updateElement(elems[i][j]);
+            addChild(gameElem);
+            
+            gameElems[i][j] = gameElem;
         }
     }
 }
@@ -238,7 +262,7 @@ bool GameField::onTouchBegan(cocos2d::Touch *touch, cocos2d::Event *unused_event
     
     // is touch inside game field
     if (pRect.containsPoint(location)) {
-        CCLOG("onTouchBegan inside gamefield");
+        CCLOG("onTouchBegan inside gamefield, point x:%f, y:%f", location.x, location.y);
         touchBeginPoint = location;
         isPressed = true;
         return true;

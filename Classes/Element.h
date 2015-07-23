@@ -27,8 +27,7 @@ public:
 
 public:
     int number;
-    
-private:
+    bool isNew;
     int pos_x;
     int pos_y;
 };

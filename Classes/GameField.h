@@ -11,6 +11,7 @@
 
 #include "cocos2d.h"
 #include "Element.h"
+#include "GameElement.h"
 
 USING_NS_CC;
 
@@ -54,6 +55,8 @@ private:
     
 private:
     Element* elems[DIMENSION][DIMENSION];
+    GameElement* gameElemsAction[DIMENSION][DIMENSION];
+    GameElement* gameElems[DIMENSION][DIMENSION];
     std::vector<int> emptyElemIndexes;
     
     MoveDirection moveDireciton;
