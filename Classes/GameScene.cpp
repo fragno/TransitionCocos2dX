@@ -81,7 +81,6 @@ bool GameMain::init()
 void GameMain::menuRestartCallback(Ref* pSender)
 {
     CCLOG("menu restart clicked");
-    // TODO: add restart logic
     gameField->init();
 }
 

@@ -45,8 +45,9 @@ public:
     void gameOver();
     
 private:
-    bool addRandomElem();
-    void refreshGameField();
+    void addRandomElem(Node * node);
+//    void refreshGameField();
+    void moveAnimation(int fromRow, int fromCol, int toRow, int toCol);
     
     void moveLeft();
     void moveRight();
@@ -55,7 +56,7 @@ private:
     
 private:
     Element* elems[DIMENSION][DIMENSION];
-    GameElement* gameElemsAction[DIMENSION][DIMENSION];
+//    GameElement* gameElemsAction[DIMENSION][DIMENSION];
     GameElement* gameElems[DIMENSION][DIMENSION];
     std::vector<int> emptyElemIndexes;
     
@@ -63,6 +64,7 @@ private:
     bool isPressed;
     Point touchBeginPoint;
     bool isMoved;
+    bool isMerged;
 };
 
 #endif /* defined(__TransitionCocos2dX__GameField__) */

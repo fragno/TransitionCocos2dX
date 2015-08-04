@@ -9,6 +9,8 @@
 #include "GameField.h"
 #include "GameElement.h"
 
+#define MoveAnimationTime 0.2f
+
 GameField::GameField()
 {
     
@@ -32,24 +34,24 @@ bool GameField::init()
     moveDireciton = MoveDirectionNone;
     isPressed = false;
     isMoved = false;
+    isMerged = false;
     touchBeginPoint = Point(0, 0);
     
     emptyElemIndexes.clear();
-    for (int i=0; i<DIMENSION; i++) {
-        for (int j=0; j<DIMENSION; j++) {
-            emptyElemIndexes.push_back(j*DIMENSION+i);
-            elems[i][j] = new Element();
-            elems[i][j]->setPosition(i, j);
+    for (int col=0; col<DIMENSION; col++) {
+        for (int row=0; row<DIMENSION; row++) {
+            emptyElemIndexes.push_back(col*DIMENSION+row);
+            elems[col][row] = new Element();
+            elems[col][row]->setPosition(col, row);
             
-            GameElement *gameElem = new GameElement();
-            gameElem->init();
-            gameElemsAction[i][j] = gameElem;
+//            GameElement *gameElem = new GameElement();
+//            gameElem->init();
+//            gameElemsAction[col][row] = gameElem;
             
-            addChild(gameElem,2);
+//            addChild(gameElem,2);
             
-            // 隐藏
-            auto hide = Hide::create();
-            gameElemsAction[i][j]->runAction(hide);
+//            auto hide = Hide::create();
+//            gameElemsAction[col][row]->runAction(hide);
         }
     }
     
@@ -74,7 +76,7 @@ bool GameField::init()
     listener->setSwallowTouches(true);
     dispatch->addEventListenerWithSceneGraphPriority(listener, this);
     
-    addRandomElem();
+    addRandomElem(this);
     
     return true;
 }
@@ -86,54 +88,89 @@ bool GameField::init()
 void GameField::moveLeft()
 {
     CCLOG("moveLeft called");
-    for (int i=1; i<DIMENSION; i++) {
-        for (int j=0; j<DIMENSION; j++) {
-            if (elems[i][j]->number > 0) {
-                if (elems[i-1][j]->number == 0) {
-                    elems[i-1][j]->number = elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    
-                    //专门弄一个动画层卡片实现定位、显现、移动、隐藏系列动画
-                    gameElemsAction[i][j]->updateElement(elems[i-1][j]);
-                    auto place = Place::create(Point(gameElems[i][j]->getBoundingBox().size.width, gameElems[i][j]->getBoundingBox().size.height-185));
-                    auto show = Show::create();
-                    auto move = MoveBy::create(1.0f, Point(-gameElems[i][j]->getContentSize().width, 0));  //注意移动的距离
-                    auto hide = Hide::create();
-                    gameElemsAction[i][j]->runAction(Sequence::create(place, show, move, hide, NULL));
-                    
-                    isMoved = true;
-                    moveLeft();
-                    
-                }else if (elems[i-1][j]->number == elems[i][j]->number){
-                    elems[i-1][j]->number = elems[i-1][j]->number + elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveLeft();
-                }
+    
+    for (int col=1; col<DIMENSION; col++) {
+        for (int row=0; row<DIMENSION; row++) {
             
+            // only not empty cell need move
+            if (elems[col][row]->number > 0) {
+                
+                int innerCol = col;
+                for (; innerCol>0; innerCol--) {
+                    
+                    // left cell is empty
+                    if (elems[innerCol-1][row]->number == 0) {
+                        elems[innerCol-1][row]->number = elems[innerCol][row]->number;
+                        elems[innerCol][row]->number = 0;
+                        
+                        isMoved = true;
+                        
+                        // left cell is same, merge cell
+                    }else if (elems[innerCol-1][row]->number == elems[innerCol][row]->number){
+                        if (isMerged) {
+                            break;
+                        }
+                        
+                        elems[innerCol-1][row]->number = elems[innerCol-1][row]->number + elems[innerCol][row]->number;
+                        elems[innerCol][row]->number = 0;
+                        
+                        isMoved = true;
+                        isMerged = true;
+                        
+                    // not same
+                    }else{
+                        break;
+                    }
+                    
+                }// the cell is moved left, from [col][row] -> [innerCol][row]
+             
+                moveAnimation(row, col, row, innerCol);
+                isMerged = false;
             }
         }
     }
 }
 
+
 void GameField::moveRight()
 {
     CCLOG("moveRight called");
-    for (int i=DIMENSION-2; i>=0; i--) {
-        for (int j=0; j<DIMENSION; j++) {
-            if (elems[i][j]->number > 0) {
-                if (elems[i+1][j]->number == 0) {
-                    elems[i+1][j]->number = elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveRight();
+    
+    for (int col=DIMENSION-2; col>=0; col--) {
+        for (int row=0; row<DIMENSION; row++) {
+            
+            // only not empty cell needs move
+            if (elems[col][row]->number > 0) {
+                
+                int innerCol = col;
+                for (; innerCol<DIMENSION-1; innerCol++) {
                     
-                }else if (elems[i+1][j]->number == elems[i][j]->number) {
-                    elems[i+1][j]->number = elems[i+1][j]->number + elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveRight();
-                }
+                    // right cell is empty
+                    if (elems[innerCol+1][row]->number == 0) {
+                        elems[innerCol+1][row]->number = elems[innerCol][row]->number;
+                        elems[innerCol][row]->number = 0;
+                        isMoved = true;
+                        
+                    // right cell is the same, merge cell
+                    }else if (elems[innerCol+1][row]->number == elems[innerCol][row]->number) {
+                        if (isMerged) {
+                            break;
+                        }
+                        
+                        elems[innerCol+1][row]->number = elems[innerCol+1][row]->number + elems[innerCol][row]->number;
+                        elems[innerCol][row]->number = 0;
+                        isMoved = true;
+                        isMerged = true;
+                        
+                    // not same
+                    }else{
+                        break;
+                    }
+                    
+                }// the cell is moved right, from [col][row]->[innerCol][row]
+                
+                moveAnimation(row, col, row, innerCol);
+                isMerged = false;
             }
         }
     }
@@ -142,21 +179,41 @@ void GameField::moveRight()
 void GameField::moveUp()
 {
     CCLOG("moveUp called");
-    for (int j=1; j<DIMENSION; j++) {
-        for (int i=0; i<DIMENSION; i++) {
-            if (elems[i][j]->number > 0) {
-                if (elems[i][j-1]->number == 0) {
-                    elems[i][j-1]->number = elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveUp();
+    
+    for (int row=1; row<DIMENSION; row++) {
+        for (int col=0; col<DIMENSION; col++) {
+            
+            // only not empty cell needs move
+            if (elems[col][row]->number > 0) {
                 
-                }else if (elems[i][j-1]->number == elems[i][j]->number){
-                    elems[i][j-1]->number = elems[i][j-1]->number + elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveUp();
-                }
+                int innerRow = row;
+                for (; innerRow>0; innerRow--) {
+                    
+                    // up cell is emtpy
+                    if (elems[col][innerRow-1]->number == 0) {
+                        elems[col][innerRow-1]->number = elems[col][innerRow]->number;
+                        elems[col][innerRow]->number = 0;
+                        isMoved = true;
+                        
+                    // up cell is the same, merge
+                    }else if (elems[col][innerRow-1]->number == elems[col][innerRow]->number){
+                        if (isMerged) {
+                            break;
+                        }
+                        
+                        elems[col][innerRow-1]->number = elems[col][innerRow-1]->number + elems[col][innerRow]->number;
+                        elems[col][innerRow]->number = 0;
+                        isMoved = true;
+                        isMerged = true;
+                        
+                    // not same
+                    }else{
+                        break;
+                    }
+                } // the cell is moved up, from [col][row] -> [col][innerRow]
+                
+                moveAnimation(row, col, innerRow, col);
+                isMerged = false;
             }
         }
     }
@@ -165,35 +222,56 @@ void GameField::moveUp()
 void GameField::moveDown()
 {
     CCLOG("moveDown called");
-    for (int j=DIMENSION-2; j>=0; j--) {
-        for (int i=0; i<DIMENSION; i++) {
-            if (elems[i][j]->number > 0) {
-                if (elems[i][j+1]->number == 0) {
-                    elems[i][j+1]->number = elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveDown();
+    
+    for (int row=DIMENSION-2; row>=0; row--) {
+        for (int col=0; col<DIMENSION; col++) {
+            
+            // only not empty cell needs move
+            if (elems[col][row]->number > 0) {
+                
+                int innerRow = row;
+                for (; innerRow<DIMENSION-1; innerRow++) {
                     
-                }else if (elems[i][j+1]->number == elems[i][j]->number){
-                    elems[i][j+1]->number = elems[i][j+1]->number + elems[i][j]->number;
-                    elems[i][j]->number = 0;
-                    isMoved = true;
-                    moveDown();
-                }
+                    // the down cell is empty
+                    if (elems[col][innerRow+1]->number == 0) {
+                        elems[col][innerRow+1]->number = elems[col][innerRow]->number;
+                        elems[col][innerRow]->number = 0;
+                        isMoved = true;
+                        
+                    // the down cell is same, merge
+                    }else if (elems[col][innerRow+1]->number == elems[col][innerRow]->number){
+                        if (isMerged) {
+                            break;
+                        }
+                        
+                        elems[col][innerRow+1]->number = elems[col][innerRow+1]->number + elems[col][innerRow]->number;
+                        elems[col][innerRow]->number = 0;
+                        isMoved = true;
+                        isMerged = true;
+                        
+                    // not same
+                    }else{
+                        break;
+                    }
+                    
+                } // the cell is moved down, from [col][row] -> [col][innerRow]
+                
+                moveAnimation(row, col, innerRow, col);
+                isMerged = false;
             }
         }
     }
 }
 
-bool GameField::addRandomElem()
+void GameField::addRandomElem(Node* node)
 {
     emptyElemIndexes.clear();
     printf("empty indexes: ");
-    for (int j=0; j<DIMENSION; j++) {
-        for (int i=0; i<DIMENSION; i++) {
-            if (elems[i][j]->number == 0) {
-                emptyElemIndexes.push_back(j*DIMENSION + i);
-                printf("%d ", j*DIMENSION + i);
+    for (int col=0; col<DIMENSION; col++) {
+        for (int row=0; row<DIMENSION; row++) {
+            if (elems[col][row]->number == 0) {
+                emptyElemIndexes.push_back(col*DIMENSION + row);
+                printf("%d ", col*DIMENSION + row);
             }
         }
     }
@@ -203,43 +281,97 @@ bool GameField::addRandomElem()
     if (maxInt < 1) {
         CCLOG("no empty field for elem!");
         gameOver();
-        return false;
+        return;
     }
     
     int randomIndex = RandomHelper::random_int(0, maxInt-1);
-    int number = randomIndex % 2 ? 2 : 4;
+    int random2or4 = RandomHelper::random_int(1, 2);
+    int number = (random2or4 == 1) ? 2 : 4;
     randomIndex = emptyElemIndexes[randomIndex];
     CCLOG("randomIndex: %d", randomIndex);
     
-    elems[randomIndex%DIMENSION][randomIndex/DIMENSION]->number = number;
-    elems[randomIndex%DIMENSION][randomIndex/DIMENSION]->isNew = true;
+    int col = randomIndex/DIMENSION;
+    int row = randomIndex%DIMENSION;
+    elems[col][row]->number = number;
+    elems[col][row]->isNew = true;
     
-    for (int j=0; j<DIMENSION; j++) {
-        for (int i=0; i<DIMENSION; i++) {
-            printf("%d ", elems[i][j]->number);
+    GameElement *gameElem = GameElement::create();
+    gameElem->updateElement(elems[col][row]);
+    addChild(gameElem);
+    
+    
+    // add to array
+    gameElems[col][row] = gameElem;
+    
+    for (int row=0; row<DIMENSION; row++) {
+        for (int col=0; col<DIMENSION; col++) {
+            printf("%d ", elems[col][row]->number);
         }
         printf("\n");
     }
     
-    refreshGameField();
-    
-    return true;
+//    refreshGameField();
 }
 
+void GameField::moveAnimation(int fromRow, int fromCol, int toRow, int toCol)
+{
+    if (fromRow == toRow && fromCol == toCol) {
+        return;
+    }
+    
+    GameElement *tmp1 = gameElems[toCol][toRow];
+    GameElement *tmp2 = gameElems[fromCol][fromRow];
+    gameElems[fromCol][fromRow] = NULL;
+    
+    // add moved cell
+    GameElement *gameElem = GameElement::create();
+    gameElem->updateElement(elems[toCol][toRow]);
+    addChild(gameElem);
+    
+    auto hide = Hide::create();
+    auto show = Show::create();
+    gameElem->runAction(hide);
+    gameElems[toCol][toRow] = gameElem;
+    
+    // add move animation
+    TargetedAction *targetAction = TargetedAction::create(gameElem, show);
+    
+    MoveBy *move = NULL;
+    if (toCol != fromCol) {
+        move = MoveBy::create(MoveAnimationTime, 1.0 * Vec2(tmp2->getContentSize().height * (toCol - fromCol), 0));
+        
+    }else if(toRow != fromRow) {
+        move = MoveBy::create(MoveAnimationTime, -1.0 * Vec2(0, tmp2->getContentSize().width * (toRow - fromRow)));
+    }
+    
+    if (tmp1 == NULL) {
+        tmp2->runAction(Sequence::create(move, hide, targetAction,
+                                         CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, tmp2)),
+                                         NULL));
+    }else{
+       tmp2->runAction(Sequence::create(move, hide, targetAction,
+                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, tmp1)),
+                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, tmp2)),
+                                        NULL));
+    }
+    
+}
 
+/*
 void GameField::refreshGameField()
 {
-    for (int i=0; i<DIMENSION; i++) {
-        for (int j=0; j<DIMENSION; j++) {
-            removeChild(gameElems[i][j]);
+    for (int col=0; col<DIMENSION; col++) {
+        for (int row=0; row<DIMENSION; row++) {
+            removeChild(gameElems[col][row]);
             GameElement *gameElem = GameElement::create();
-            gameElem->updateElement(elems[i][j]);
+            gameElem->updateElement(elems[col][row]);
             addChild(gameElem);
             
-            gameElems[i][j] = gameElem;
+            gameElems[col][row] = gameElem;
         }
     }
 }
+ */
 
 void GameField::gameOver()
 {
@@ -291,6 +423,10 @@ void GameField::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event
         location = Director::getInstance()->convertToGL(location);
         int deltaX = location.x - touchBeginPoint.x;
         int deltaY = location.y - touchBeginPoint.y;
+        if (abs(deltaX) < 4 && abs(deltaY) < 4) {
+            return;
+        }
+        
         if (abs(deltaX) >= abs(deltaY)) {
             moveDireciton = deltaX > 0 ?  MoveDirectionRight : MoveDirectionLeft;
             
@@ -323,7 +459,9 @@ void GameField::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event
         }
         
         if (isMoved) {
-            addRandomElem();
+            auto delay = DelayTime::create(MoveAnimationTime+0.1f);
+            auto addCell = CallFuncN::create(CC_CALLBACK_1(GameField::addRandomElem, this));
+            this->runAction(Sequence::create(delay, addCell, NULL));
             isMoved = false;
         }
         
