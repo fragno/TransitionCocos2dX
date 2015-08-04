@@ -88,7 +88,7 @@ bool GameField::init()
 void GameField::moveLeft()
 {
     CCLOG("moveLeft called");
-    
+
     for (int col=1; col<DIMENSION; col++) {
         for (int row=0; row<DIMENSION; row++) {
             
@@ -107,15 +107,15 @@ void GameField::moveLeft()
                         
                         // left cell is same, merge cell
                     }else if (elems[innerCol-1][row]->number == elems[innerCol][row]->number){
-                        if (isMerged) {
+                        if (elems[innerCol-1][row]->isMerged || elems[innerCol][row]->isMerged) {
                             break;
                         }
                         
                         elems[innerCol-1][row]->number = elems[innerCol-1][row]->number + elems[innerCol][row]->number;
+                        elems[innerCol-1][row]->isMerged = true;
                         elems[innerCol][row]->number = 0;
                         
                         isMoved = true;
-                        isMerged = true;
                         
                     // not same
                     }else{
@@ -125,7 +125,6 @@ void GameField::moveLeft()
                 }// the cell is moved left, from [col][row] -> [innerCol][row]
              
                 moveAnimation(row, col, row, innerCol);
-                isMerged = false;
             }
         }
     }
@@ -153,14 +152,14 @@ void GameField::moveRight()
                         
                     // right cell is the same, merge cell
                     }else if (elems[innerCol+1][row]->number == elems[innerCol][row]->number) {
-                        if (isMerged) {
+                        if (elems[innerCol+1][row]->isMerged || elems[innerCol][row]->isMerged) {
                             break;
                         }
                         
                         elems[innerCol+1][row]->number = elems[innerCol+1][row]->number + elems[innerCol][row]->number;
+                        elems[innerCol+1][row]->isMerged = true;
                         elems[innerCol][row]->number = 0;
                         isMoved = true;
-                        isMerged = true;
                         
                     // not same
                     }else{
@@ -170,7 +169,6 @@ void GameField::moveRight()
                 }// the cell is moved right, from [col][row]->[innerCol][row]
                 
                 moveAnimation(row, col, row, innerCol);
-                isMerged = false;
             }
         }
     }
@@ -197,14 +195,14 @@ void GameField::moveUp()
                         
                     // up cell is the same, merge
                     }else if (elems[col][innerRow-1]->number == elems[col][innerRow]->number){
-                        if (isMerged) {
+                        if (elems[col][innerRow-1]->isMerged || elems[col][innerRow]->isMerged) {
                             break;
                         }
                         
                         elems[col][innerRow-1]->number = elems[col][innerRow-1]->number + elems[col][innerRow]->number;
+                        elems[col][innerRow-1]->isMerged = true;
                         elems[col][innerRow]->number = 0;
                         isMoved = true;
-                        isMerged = true;
                         
                     // not same
                     }else{
@@ -213,7 +211,6 @@ void GameField::moveUp()
                 } // the cell is moved up, from [col][row] -> [col][innerRow]
                 
                 moveAnimation(row, col, innerRow, col);
-                isMerged = false;
             }
         }
     }
@@ -240,14 +237,14 @@ void GameField::moveDown()
                         
                     // the down cell is same, merge
                     }else if (elems[col][innerRow+1]->number == elems[col][innerRow]->number){
-                        if (isMerged) {
+                        if (elems[col][innerRow+1]->isMerged || elems[col][innerRow]->isMerged) {
                             break;
                         }
                         
                         elems[col][innerRow+1]->number = elems[col][innerRow+1]->number + elems[col][innerRow]->number;
+                        elems[col][innerRow+1]->isMerged = true;
                         elems[col][innerRow]->number = 0;
                         isMoved = true;
-                        isMerged = true;
                         
                     // not same
                     }else{
@@ -257,7 +254,6 @@ void GameField::moveDown()
                 } // the cell is moved down, from [col][row] -> [col][innerRow]
                 
                 moveAnimation(row, col, innerRow, col);
-                isMerged = false;
             }
         }
     }
@@ -302,13 +298,6 @@ void GameField::addRandomElem(Node* node)
     
     // add to array
     gameElems[col][row] = gameElem;
-    
-    for (int row=0; row<DIMENSION; row++) {
-        for (int col=0; col<DIMENSION; col++) {
-            printf("%d ", elems[col][row]->number);
-        }
-        printf("\n");
-    }
     
 //    refreshGameField();
 }
@@ -463,6 +452,15 @@ void GameField::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event
             auto addCell = CallFuncN::create(CC_CALLBACK_1(GameField::addRandomElem, this));
             this->runAction(Sequence::create(delay, addCell, NULL));
             isMoved = false;
+        }
+        
+        for (int row=0; row<DIMENSION; row++) {
+            for (int col=0; col<DIMENSION; col++) {
+                elems[col][row]->isMerged = false;
+                
+                printf("%d ", elems[col][row]->number);
+            }
+            printf("\n");
         }
         
         isPressed = false;

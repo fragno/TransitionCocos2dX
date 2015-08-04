@@ -28,6 +28,7 @@ public:
 public:
     int number;
     bool isNew;
+    bool isMerged;
     int pos_x;
     int pos_y;
 };
