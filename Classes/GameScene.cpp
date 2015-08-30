@@ -1,8 +1,8 @@
 #include "GameScene.h"
 #include "Element.h"
-#include "ScoreLabel.h"
 #include "BestLabel.h"
 #include "GameField.h"
+#include "PublicDefine.h"
 
 USING_NS_CC;
 
@@ -35,9 +35,10 @@ bool GameMain::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
     // create Score Lable
-    auto scoreLabel = ScoreLabel::create();
+    scoreLabel = ScoreLabel::create();
     scoreLabel->setAnchorPoint(Vec2(0, 0));
     scoreLabel->setPosition(Vec2(origin.x, origin.y + visibleSize.height - 10));
+    scoreLabel->setTag(kTagScoreLabel);
     this->addChild(scoreLabel, 2);
     
     // create bestScore Label
@@ -48,7 +49,9 @@ bool GameMain::init()
     
     
     // restart menu
-    auto restartItem = MenuItemImage::create("textures/gui/demo_background.png", "textures/gui/demo_background.png", CC_CALLBACK_1(GameMain::menuRestartCallback, this));
+    auto restartItem = MenuItemImage::create("textures/gui/demo_background.png",
+                                             "textures/gui/demo_background.png",
+                                             CC_CALLBACK_1(GameMain::menuRestartCallback, this));
     
     // restart label
     auto restartLabel = Label::createWithTTF("restart","fonts/Marker Felt.ttf", 200);
@@ -74,6 +77,12 @@ bool GameMain::init()
     gameField->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/2));
     addChild(gameField, 0);
     
+    
+    // add event listener
+    auto dispatcher = Director::getInstance()->getEventDispatcher();
+    auto cellMovedEvent = EventListenerCustom::create("CellMoved", CC_CALLBACK_1(GameMain::cellMoved, this));
+    dispatcher->addEventListenerWithSceneGraphPriority(cellMovedEvent, this);
+    
     return true;
 }
 
@@ -93,5 +102,16 @@ void GameMain::menuCloseCallback(Ref* pSender)
     exit(0);
 #endif
 }
+
+void GameMain::cellMoved(EventCustom* event)
+{
+    char* buf = static_cast<char*>(event->getUserData());
+    
+    int score = atoi(buf);
+    
+    scoreLabel->updateScore(score);
+    CCLOG("cell Moved， score: %d", score);
+}
+
 
 

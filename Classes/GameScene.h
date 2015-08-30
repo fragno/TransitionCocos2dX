@@ -3,6 +3,7 @@
 
 #include "cocos2d.h"
 #include "GameField.h"
+#include "ScoreLabel.h"
 
 class GameMain : public cocos2d::Layer
 {
@@ -19,9 +20,11 @@ public:
     // menu functions
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuCloseCallback(cocos2d::Ref* pSender);
+    void cellMoved(EventCustom* event);
     
 private:
     GameField *gameField;
+    ScoreLabel *scoreLabel;
 };
 
 #endif // __GAME_SCENE_H__

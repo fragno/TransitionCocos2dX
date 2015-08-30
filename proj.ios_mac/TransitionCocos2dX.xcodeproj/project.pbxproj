@@ -174,6 +174,7 @@
 		E81B8FCE1B5B52E50031D1EC /* BestLabel.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BestLabel.h; sourceTree = "<group>"; };
 		E81B8FD31B5B53100031D1EC /* GameField.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GameField.cpp; sourceTree = "<group>"; };
 		E81B8FD41B5B53100031D1EC /* GameField.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GameField.h; sourceTree = "<group>"; };
+		E8AC625B1B91E1DA006C6D04 /* PublicDefine.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = PublicDefine.h; sourceTree = "<group>"; };
 		E8D332DE1B5A3EC200FE6FBD /* Element.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Element.cpp; sourceTree = "<group>"; };
 		E8D332DF1B5A3EC200FE6FBD /* Element.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Element.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -320,6 +321,7 @@
 				6610FBB81B5F9322001F56F1 /* GameElement.h */,
 				E81B8FD31B5B53100031D1EC /* GameField.cpp */,
 				E81B8FD41B5B53100031D1EC /* GameField.h */,
+				E8AC625B1B91E1DA006C6D04 /* PublicDefine.h */,
 			);
 			name = Classes;
 			path = ../Classes;
@@ -571,7 +573,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: tianfu zhang (DPM839XL32)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Jie Lian (B2SF6EK965)";
 				COMPRESS_PNG_FILES = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
@@ -607,7 +609,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				CODE_SIGN_IDENTITY = "iPhone Developer: tianfu zhang (DPM839XL32)";
+				CODE_SIGN_IDENTITY = "iPhone Developer: Jie Lian (B2SF6EK965)";
 				COMPRESS_PNG_FILES = NO;
 				GCC_INLINES_ARE_PRIVATE_EXTERN = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

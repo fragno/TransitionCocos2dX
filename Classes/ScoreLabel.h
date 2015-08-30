@@ -22,10 +22,13 @@ public:
     // overrides
     virtual bool init(void) override;
     
+    void updateScore(int score);
+    
     CREATE_FUNC(ScoreLabel);
     
 private:
     unsigned int score;
+    Label* scoreLabel;
 };
 
 #endif /* defined(__TransitionCocos2dX__ScoreLabel__) */

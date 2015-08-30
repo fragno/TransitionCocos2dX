@@ -56,7 +56,6 @@ private:
     
 private:
     Element* elems[DIMENSION][DIMENSION];
-//    GameElement* gameElemsAction[DIMENSION][DIMENSION];
     GameElement* gameElems[DIMENSION][DIMENSION];
     std::vector<int> emptyElemIndexes;
     
@@ -65,6 +64,7 @@ private:
     Point touchBeginPoint;
     bool isMoved;
     bool isMerged;
+    unsigned int score;
 };
 
 #endif /* defined(__TransitionCocos2dX__GameField__) */

@@ -33,7 +33,7 @@ bool ScoreLabel::init()
     scoreBg->setAnchorPoint(Vec2(0,1));
     
     // scoreLabel
-    auto scoreLabel = Label::createWithTTF("1024","fonts/Marker Felt.ttf", 200);
+    scoreLabel = Label::createWithTTF("1024","fonts/Marker Felt.ttf", 200);
     scoreLabel->setAnchorPoint(Vec2(0.5, 0.5));
     scoreLabel->setPosition(scoreBg->getContentSize().width/2, scoreBg->getContentSize().height/2 + 150);
     scoreLabel->setTextColor(Color4B::YELLOW);
@@ -43,5 +43,10 @@ bool ScoreLabel::init()
     addChild(scoreBg);
  
     return true;
+}
+
+void ScoreLabel::updateScore(int score)
+{
+    scoreLabel->setString(std::to_string(score));
 }
 

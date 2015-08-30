@@ -8,6 +8,7 @@
 
 #include "GameField.h"
 #include "GameElement.h"
+#include "PublicDefine.h"
 
 #define MoveAnimationTime 0.2f
 
@@ -36,6 +37,7 @@ bool GameField::init()
     isMoved = false;
     isMerged = false;
     touchBeginPoint = Point(0, 0);
+    score = 0;
     
     emptyElemIndexes.clear();
     for (int col=0; col<DIMENSION; col++) {
@@ -43,15 +45,6 @@ bool GameField::init()
             emptyElemIndexes.push_back(col*DIMENSION+row);
             elems[col][row] = new Element();
             elems[col][row]->setPosition(col, row);
-            
-//            GameElement *gameElem = new GameElement();
-//            gameElem->init();
-//            gameElemsAction[col][row] = gameElem;
-            
-//            addChild(gameElem,2);
-            
-//            auto hide = Hide::create();
-//            gameElemsAction[col][row]->runAction(hide);
         }
     }
     
@@ -412,7 +405,7 @@ void GameField::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event
         location = Director::getInstance()->convertToGL(location);
         int deltaX = location.x - touchBeginPoint.x;
         int deltaY = location.y - touchBeginPoint.y;
-        if (abs(deltaX) < 4 && abs(deltaY) < 4) {
+        if (abs(deltaX) < 10 && abs(deltaY) < 10) {
             return;
         }
         
@@ -451,13 +444,24 @@ void GameField::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event
             auto delay = DelayTime::create(MoveAnimationTime+0.1f);
             auto addCell = CallFuncN::create(CC_CALLBACK_1(GameField::addRandomElem, this));
             this->runAction(Sequence::create(delay, addCell, NULL));
+            score += 2;
+            
+            
+            // add custom event
+            auto dispatcher = Director::getInstance()->getEventDispatcher();
+            EventCustom event("CellMoved");
+            char* buf = new char[10];
+            sprintf(buf, "%d", score);
+            event.setUserData((void *)buf);
+            dispatcher->dispatchEvent(&event);
+            
+            CCLOG("score = %u", score);
             isMoved = false;
         }
         
         for (int row=0; row<DIMENSION; row++) {
             for (int col=0; col<DIMENSION; col++) {
                 elems[col][row]->isMerged = false;
-                
                 printf("%d ", elems[col][row]->number);
             }
             printf("\n");
