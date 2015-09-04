@@ -3,6 +3,7 @@
 #include "BestLabel.h"
 #include "GameField.h"
 #include "PublicDefine.h"
+#include "SceneTrans.h"
 
 USING_NS_CC;
 
@@ -68,20 +69,20 @@ bool GameMain::init()
     auto menu = Menu::create(restartItem, NULL);
     menu->setAnchorPoint(Vec2(0,0));
     menu->setPosition(Vec2(0,0));
-    addChild(menu, 2);
+    this->addChild(menu, 2);
     
     
     // game field
     gameField = GameField::create();
     gameField->setAnchorPoint(Vec2(0.5,0.5));
     gameField->setPosition(Vec2(origin.x + visibleSize.width/2, origin.y + visibleSize.height/2));
-    addChild(gameField, 0);
+    this->addChild(gameField, 0);
     
     
     // add event listener
     auto dispatcher = Director::getInstance()->getEventDispatcher();
-    auto cellMovedEvent = EventListenerCustom::create("CellMoved", CC_CALLBACK_1(GameMain::cellMoved, this));
-    dispatcher->addEventListenerWithSceneGraphPriority(cellMovedEvent, this);
+    auto cellMovedEventListener = EventListenerCustom::create("CellMoved", CC_CALLBACK_1(GameMain::cellMoved, this));
+    dispatcher->addEventListenerWithSceneGraphPriority(cellMovedEventListener, this);
     
     return true;
 }
@@ -90,7 +91,7 @@ bool GameMain::init()
 void GameMain::menuRestartCallback(Ref* pSender)
 {
     CCLOG("menu restart clicked");
-    gameField->init();
+    SceneTrans::startFlipInterface(GAME_START);
 }
 
 // TODO: add close menu

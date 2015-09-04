@@ -32,7 +32,7 @@ bool GameElement::init()
     Size winSize = Director::getInstance()->getWinSize();
     sideLen = (winSize.width - 10)/4;
     
-    gamefield = Sprite::create("textures/blocks/anvil_base.png");
+    gamefield = Sprite::create("textures/colormap/foliage.png");
     gamefield->setColor(Color3B::WHITE);
     
     Texture2D::TexParams params;
@@ -103,7 +103,7 @@ void GameElement::updateElement(Element *elem)
     gamefield->setPosition(Vec2((elem->pos_x+1)*sideLen, (4-elem->pos_y)*sideLen));
     
     // add number
-    auto numberLabel = Label::createWithTTF("","fonts/Marker Felt.ttf", 50);
+    auto numberLabel = Label::createWithTTF("","fonts/Marker Felt.ttf", 100);
     numberLabel->setAnchorPoint(Vec2(0.5, 0.5));
     numberLabel->setPosition(gamefield->getContentSize().width/2, gamefield->getContentSize().height/2);
     numberLabel->setTextColor(Color4B::ORANGE);

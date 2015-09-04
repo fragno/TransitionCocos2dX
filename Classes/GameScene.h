@@ -21,6 +21,7 @@ public:
     void menuRestartCallback(cocos2d::Ref* pSender);
     void menuCloseCallback(cocos2d::Ref* pSender);
     void cellMoved(EventCustom* event);
+    void gameOver(EventCustom* event);
     
 private:
     GameField *gameField;

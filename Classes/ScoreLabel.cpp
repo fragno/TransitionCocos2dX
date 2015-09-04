@@ -29,7 +29,7 @@ bool ScoreLabel::init()
 
     // scoreBg
     auto scoreBg = Sprite::create("textures/gui/demo_background.png");
-    scoreBg->setScale(0.4, 0.3);
+    scoreBg->setScale(0.3, 0.3);
     scoreBg->setAnchorPoint(Vec2(0,1));
     
     // scoreLabel

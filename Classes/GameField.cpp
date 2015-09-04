@@ -9,6 +9,7 @@
 #include "GameField.h"
 #include "GameElement.h"
 #include "PublicDefine.h"
+#include "SceneTrans.h"
 
 #define MoveAnimationTime 0.2f
 
@@ -28,6 +29,8 @@ bool GameField::init()
     if (!Layer::init()) {
         return false;
     }
+    
+    this->removeAllChildrenWithCleanup(true);
     
     // valid anchor point
     ignoreAnchorPointForPosition(false);
@@ -291,8 +294,6 @@ void GameField::addRandomElem(Node* node)
     
     // add to array
     gameElems[col][row] = gameElem;
-    
-//    refreshGameField();
 }
 
 void GameField::moveAnimation(int fromRow, int fromCol, int toRow, int toCol)
@@ -339,25 +340,10 @@ void GameField::moveAnimation(int fromRow, int fromCol, int toRow, int toCol)
     
 }
 
-/*
-void GameField::refreshGameField()
-{
-    for (int col=0; col<DIMENSION; col++) {
-        for (int row=0; row<DIMENSION; row++) {
-            removeChild(gameElems[col][row]);
-            GameElement *gameElem = GameElement::create();
-            gameElem->updateElement(elems[col][row]);
-            addChild(gameElem);
-            
-            gameElems[col][row] = gameElem;
-        }
-    }
-}
- */
-
 void GameField::gameOver()
 {
     CCLOG("game over!");
+    SceneTrans::startFlipInterface(GAME_OVER);
 }
 
 #pragma mark -
