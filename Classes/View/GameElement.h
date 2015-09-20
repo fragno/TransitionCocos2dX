@@ -38,11 +38,11 @@ public:
     void setIsMerged(bool isMerged);
     bool getIsMerged();
     
+    bool _isNew;
     
 private:
     float _sideLen;
     int _number;
-    bool _isNew;
     bool _isMerged;
     Vec2 _pos;
     

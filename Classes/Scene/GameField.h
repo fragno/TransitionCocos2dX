@@ -67,7 +67,6 @@ private:
     
 private:
     GameElement *_gameElems[DIMENSION][DIMENSION];
-    GameElement *_gameElemsAction[DIMENSION][DIMENSION];
     ElemStatus _emptyElemIndexes[DIMENSION][DIMENSION];
     
     MoveDirection _moveDireciton;

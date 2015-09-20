@@ -88,12 +88,6 @@ void GameField::createElemArray()
             elem->setPos(Vec2(col, row));
             _gamefield->addChild(elem);
             _gameElems[col][row] = elem;
-            
-            GameElement *elemAction = GameElement::create();
-            elemAction->setNumber(0);
-            elemAction->setPos(Vec2(col, row));
-//            addChild(elemAction);
-            _gameElemsAction[col][row] = elemAction;
         }
     }
 }
@@ -153,13 +147,12 @@ bool GameField::addRandomElem()
 
 void GameField::moveElem(GameElement *elemFrom, GameElement *elemTo)
 {
-    // TODO: add move animation
-    
     // 目的elem是空的，直接移动
     if (elemTo->isEmpty()) {
         elemTo->setNumber(elemFrom->getNumber());
         elemFrom->setNumber(0);
         _isMoved = true;
+        
         return;
     }
     
@@ -172,6 +165,7 @@ void GameField::moveElem(GameElement *elemFrom, GameElement *elemTo)
         return;
     }
 }
+
 
 void GameField::mergeElems(GameElement *elemFrom, GameElement *elemTo)
 {
@@ -213,7 +207,7 @@ void GameField::moveLeft()
                     
                 }// the cell is moved left, from [col][row] -> [innerCol][row]
              
-//                moveAnimation(row, col, row, innerCol);
+                moveAnimation(row, col, row, innerCol);
             }
         }
     }
@@ -245,7 +239,7 @@ void GameField::moveRight()
                     
                 }// the cell is moved right, from [col][row]->[innerCol][row]
                 
-//                moveAnimation(row, col, row, innerCol);
+                moveAnimation(row, col, row, innerCol);
             }
         }
     }
@@ -275,7 +269,7 @@ void GameField::moveUp()
                     }
                 } // the cell is moved up, from [col][row] -> [col][innerRow]
                 
-//                moveAnimation(row, col, innerRow, col);
+                moveAnimation(row, col, innerRow, col);
             }
         }
     }
@@ -314,44 +308,36 @@ void GameField::moveDown()
 
 void GameField::moveAnimation(int fromRow, int fromCol, int toRow, int toCol)
 {
-//    if (fromRow == toRow && fromCol == toCol) {
-//        return;
-//    }
-//    
-//    GameElement *tmp1 = _gameElems[toCol][toRow];
-//    GameElement *tmp2 = _gameElems[fromCol][fromRow];
-//    
-//    // add moved cell
-//    GameElement *aniElem = GameElement::create();
-//    gameElem->updateElement(_gameElems[toCol][toRow]);
-//    addChild(gameElem);
-//    
-//    auto hide = Hide::create();
-//    auto show = Show::create();
-//    gameElem->runAction(hide);
-//    gameElems[toCol][toRow] = gameElem;
-//    
-//    // add move animation
-//    TargetedAction *targetAction = TargetedAction::create(gameElem, show);
-//    
-//    MoveBy *move = NULL;
-//    if (toCol != fromCol) {
-//        move = MoveBy::create(MoveAnimationTime, 1.0 * Vec2(tmp2->getContentSize().height * (toCol - fromCol), 0));
-//        
-//    }else if(toRow != fromRow) {
-//        move = MoveBy::create(MoveAnimationTime, -1.0 * Vec2(0, tmp2->getContentSize().width * (toRow - fromRow)));
-//    }
-//    
-//    if (tmp1 == NULL) {
-//        tmp2->runAction(Sequence::create(move, hide, targetAction,
-//                                         CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, tmp2)),
-//                                         NULL));
-//    }else{
-//       tmp2->runAction(Sequence::create(move, hide, targetAction,
-//                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, tmp1)),
-//                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, tmp2)),
-//                                        NULL));
-//    }
+    if (!_isMoved) {
+        return;
+    }
+    _gameElems[toCol][toRow]->setVisible(false);
+    
+    GameElement *emptyElem = GameElement::create();
+    emptyElem->_isNew = false;
+    emptyElem->setNumber(0);
+    emptyElem->setPos(_gameElems[toCol][toRow]->getPos());
+    _gamefield->addChild(emptyElem, 10);
+    
+    GameElement *aniElem = GameElement::create();
+    aniElem->_isNew = false;
+    aniElem->setNumber(_gameElems[toCol][toRow]->getNumber()/(_isMerged ? 2 : 1));
+    aniElem->setPos(_gameElems[fromCol][fromRow]->getPos());
+    _gamefield->addChild(aniElem);
+    
+    Vec2 deltaPos = _gameElems[toCol][toRow]->getPos() - _gameElems[fromCol][fromRow]->getPos();
+    Vec2 deltaDis = Vec2(deltaPos.x * aniElem->getSideLen(), -1.0 * deltaPos.y * aniElem->getSideLen());
+    
+
+    auto move = MoveBy::create(MoveAnimationTime, deltaDis);
+    auto show = Show::create();
+    auto toElemAction = TargetedAction::create(_gameElems[toCol][toRow], show);
+    
+    aniElem->runAction(Sequence::create(move,
+                                        toElemAction,
+                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, aniElem)),
+                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, emptyElem)),
+                                        NULL));
     
 }
 
@@ -442,7 +428,10 @@ void GameField::onTouchEnded(cocos2d::Touch *touch, cocos2d::Event *unused_event
         }
         
         if (_isMoved) {
-            addRandomElem();
+            this->runAction(Sequence::create(
+                                             DelayTime::create(MoveAnimationTime + 0.1f),
+                                             CallFunc::create(CC_CALLBACK_0(GameField::addRandomElem, this)), NULL)
+                            );
             
             _score += 2;
             

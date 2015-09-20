@@ -123,6 +123,11 @@ void GameElement::setPos(Vec2 pos)
     }
 }
 
+Vec2 GameElement::getPos()
+{
+    return _pos;
+}
+
 bool GameElement::getIsMerged()
 {
     return _isMerged;
