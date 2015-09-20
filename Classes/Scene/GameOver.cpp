@@ -7,7 +7,6 @@
 //
 
 #include "GameOver.h"
-#include "SceneTrans.h"
 
 USING_NS_CC;
 
@@ -66,5 +65,5 @@ bool GameOver::init()
 void GameOver::menuRestartCallback(Ref* pSender)
 {
     CCLOG("menu restart clicked");
-    SceneTrans::startFlipInterface(GAME_START);
+//    SceneTrans::startFlipInterface(GAME_START);
 }

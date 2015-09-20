@@ -18,7 +18,7 @@ enum{
     GAME_OVER,      // game over
 };
 
-class SceneTrans : public Layer
+class GameManager : public Layer
 {
 public:
     static void startFlipInterface(int iType);

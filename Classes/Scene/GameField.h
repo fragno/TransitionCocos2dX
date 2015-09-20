@@ -10,8 +10,8 @@
 #define __TransitionCocos2dX__GameField__
 
 #include "cocos2d.h"
-#include "Element.h"
 #include "GameElement.h"
+#include "GameConfig.h"
 
 USING_NS_CC;
 
@@ -23,9 +23,15 @@ enum MoveDirection: unsigned {
     MoveDirectionDown,
 };
 
-#define DIMENSION 4
+enum ElemStatus: unsigned {
+    ElemStatusEmpty,
+    ElemStatusNew,
+    ElemStatusMerged,
+    ElemStatusNormal,
+};
 
-class GameField : public cocos2d::Layer
+class GameElement;
+class GameField : public Layer
 {
 public:
     GameField();
@@ -41,30 +47,36 @@ public:
     
     CREATE_FUNC(GameField);
     
-    // game over
-    void gameOver();
+    void restartGame();
+
     
 private:
-    void addRandomElem(Node * node);
-//    void refreshGameField();
+    void createElemArray(void);
+    bool addRandomElem();
     void moveAnimation(int fromRow, int fromCol, int toRow, int toCol);
     
+    void moveElem(GameElement *elemFrom, GameElement *elemTo);
+    void mergeElems(GameElement *elemFrom, GameElement *elemTo);
     void moveLeft();
     void moveRight();
     void moveUp();
     void moveDown();
     
-private:
-    Element* elems[DIMENSION][DIMENSION];
-    GameElement* gameElems[DIMENSION][DIMENSION];
-    std::vector<int> emptyElemIndexes;
+    bool checkGameOver();
+    void gameOver();
     
-    MoveDirection moveDireciton;
-    bool isPressed;
-    Point touchBeginPoint;
-    bool isMoved;
-    bool isMerged;
-    unsigned int score;
+private:
+    GameElement *_gameElems[DIMENSION][DIMENSION];
+    GameElement *_gameElemsAction[DIMENSION][DIMENSION];
+    ElemStatus _emptyElemIndexes[DIMENSION][DIMENSION];
+    
+    MoveDirection _moveDireciton;
+    bool _isPressed;
+    Point _touchBeginPoint;
+    bool _isMoved;
+    bool _isMerged;
+    unsigned int _score;
+    Sprite *_gamefield;
 };
 
 #endif /* defined(__TransitionCocos2dX__GameField__) */

@@ -11,13 +11,11 @@
 
 BestLabel::BestLabel()
 {
-    // init variable
     bestScore = 0;
 }
 
 BestLabel::~BestLabel()
 {
-    
 }
 
 bool BestLabel::init()
@@ -31,7 +29,7 @@ bool BestLabel::init()
     
     // bestScoreBg
     auto bestScoreBg = Sprite::create("textures/gui/demo_background.png");
-    bestScoreBg->setScale(0.3, 0.12);
+    bestScoreBg->setScale(0.3, 0.10);
     bestScoreBg->setAnchorPoint(Vec2(1,1));
     
     
@@ -42,7 +40,6 @@ bool BestLabel::init()
     bestScoreLabel->setTextColor(Color4B::RED);
     bestScoreLabel->setString(std::to_string(bestScore));
     bestScoreBg->addChild(bestScoreLabel);
-    
     
     addChild(bestScoreBg);
     

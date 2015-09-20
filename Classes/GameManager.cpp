@@ -6,12 +6,13 @@
 //
 //
 
-#include "SceneTrans.h"
-#include "GameScene.h"
+#include "GameManager.h"
+#include "GameField.h"
+#include "GameMain.h"
 #include "GameOver.h"
 
 
-void SceneTrans::startFlipInterface(int iType)
+void GameManager::startFlipInterface(int iType)
 {
     Scene* pScene = NULL;
     

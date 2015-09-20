@@ -2,14 +2,16 @@
 #define __GAME_SCENE_H__
 
 #include "cocos2d.h"
-#include "GameField.h"
-#include "ScoreLabel.h"
 
-class GameMain : public cocos2d::Layer
+USING_NS_CC;
+
+class GameField;
+class ScoreLabel;
+class GameMain : public Layer
 {
 public:
     // there's no 'id' in cpp, so we recommend returning the class instance pointer
-    static cocos2d::Scene* createScene();
+    static Scene* createScene();
 
     // Here's a difference. Method 'init' in cocos2d-x returns bool, instead of returning 'id' in cocos2d-iphone
     virtual bool init();
@@ -18,8 +20,8 @@ public:
     CREATE_FUNC(GameMain);
     
     // menu functions
-    void menuRestartCallback(cocos2d::Ref* pSender);
-    void menuCloseCallback(cocos2d::Ref* pSender);
+    void menuRestartCallback(Ref* pSender);
+    void menuCloseCallback(Ref* pSender);
     void cellMoved(EventCustom* event);
     void gameOver(EventCustom* event);
     

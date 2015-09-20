@@ -1,9 +1,8 @@
-#include "GameScene.h"
-#include "Element.h"
+#include "GameMain.h"
 #include "BestLabel.h"
 #include "GameField.h"
-#include "PublicDefine.h"
-#include "SceneTrans.h"
+#include "ScoreLabel.h"
+#include "GameOver.h"
 
 USING_NS_CC;
 
@@ -37,9 +36,8 @@ bool GameMain::init()
     
     // create Score Lable
     scoreLabel = ScoreLabel::create();
-    scoreLabel->setAnchorPoint(Vec2(0, 0));
-    scoreLabel->setPosition(Vec2(origin.x, origin.y + visibleSize.height - 10));
-    scoreLabel->setTag(kTagScoreLabel);
+    scoreLabel->setAnchorPoint(Vec2(0, 1));
+    scoreLabel->setPosition(Point(origin.x, origin.y + visibleSize.height));
     this->addChild(scoreLabel, 2);
     
     // create bestScore Label
@@ -54,17 +52,16 @@ bool GameMain::init()
                                              "textures/gui/demo_background.png",
                                              CC_CALLBACK_1(GameMain::menuRestartCallback, this));
     
-    // restart label
     auto restartLabel = Label::createWithTTF("restart","fonts/Marker Felt.ttf", 200);
     restartLabel->setAnchorPoint(Vec2(0.5, 0.5));
     restartLabel->setPosition(restartItem->getContentSize().width/2, restartItem->getContentSize().height/2 + 150);
     restartLabel->setTextColor(Color4B::YELLOW);
     restartLabel->setName("restart");
-    restartItem->addChild(restartLabel);
     
-    restartItem->setScale(0.3, 0.16);
+    restartItem->addChild(restartLabel);
+    restartItem->setScale(0.3, 0.10);
     restartItem->setAnchorPoint(Vec2(1,1));
-    restartItem->setPosition(bestScoreLabel->getPosition().x, bestScoreLabel->getPosition().y - 92);
+    restartItem->setPosition(bestScoreLabel->getPosition().x, bestScoreLabel->getPosition().y - 70);
     
     auto menu = Menu::create(restartItem, NULL);
     menu->setAnchorPoint(Vec2(0,0));
@@ -91,10 +88,11 @@ bool GameMain::init()
 void GameMain::menuRestartCallback(Ref* pSender)
 {
     CCLOG("menu restart clicked");
-    SceneTrans::startFlipInterface(GAME_START);
+    scoreLabel->updateScore(0);
+    gameField->restartGame();
 }
 
-// TODO: add close menu
+
 void GameMain::menuCloseCallback(Ref* pSender)
 {
     Director::getInstance()->end();

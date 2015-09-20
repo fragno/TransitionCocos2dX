@@ -13,7 +13,7 @@
 
 USING_NS_CC;
 
-class ScoreLabel : public cocos2d::Layer
+class ScoreLabel : public Layer
 {
 public:
     ScoreLabel();
@@ -22,9 +22,9 @@ public:
     // overrides
     virtual bool init(void) override;
     
-    void updateScore(int score);
-    
     CREATE_FUNC(ScoreLabel);
+    
+    void updateScore(int score);
     
 private:
     unsigned int score;

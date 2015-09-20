@@ -13,7 +13,7 @@
 
 USING_NS_CC;
 
-class BestLabel : public cocos2d::Layer
+class BestLabel : public Layer
 {
 public:
     BestLabel();

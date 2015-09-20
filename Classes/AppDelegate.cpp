@@ -1,10 +1,8 @@
 #include "AppDelegate.h"
-#include "GameScene.h"
+#include "GameMain.h"
 
-USING_NS_CC;
-
-AppDelegate::AppDelegate() {
-
+AppDelegate::AppDelegate()
+{
 }
 
 AppDelegate::~AppDelegate() 
@@ -34,7 +32,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     auto director = Director::getInstance();
     auto glview = director->getOpenGLView();
     if(!glview) {
-        glview = GLViewImpl::create("My Game");
+        glview = GLViewImpl::create("Transition");
         director->setOpenGLView(glview);
     }
 
