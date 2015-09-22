@@ -29,18 +29,21 @@ public:
     
     bool isEmpty();
     
+    GameElement *copy();
+    
     // getter && setter
     void setNumber(int number);
     int getNumber();
+    void setSideLen(float sideLen);
     float getSideLen();
     void setPos(Vec2 pos);
     Vec2 getPos();
     void setIsMerged(bool isMerged);
     bool getIsMerged();
-    
-    bool _isNew;
+    void setIsNew(bool isNew);
     
 private:
+    bool _isNew;
     float _sideLen;
     int _number;
     bool _isMerged;

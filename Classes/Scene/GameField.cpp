@@ -10,7 +10,7 @@
 #include "GameElement.h"
 #include "GameOver.h"
 
-#define MoveAnimationTime 0.2f
+#define MoveAnimationTime 1.2f
 
 GameField::GameField()
 : _moveDireciton(MoveDirectionNone)
@@ -86,7 +86,7 @@ void GameField::createElemArray()
             GameElement *elem = GameElement::create();
             elem->setNumber(0);
             elem->setPos(Vec2(col, row));
-            _gamefield->addChild(elem);
+            _gamefield->addChild(elem, 1);
             _gameElems[col][row] = elem;
         }
     }
@@ -121,10 +121,8 @@ bool GameField::addRandomElem()
             if (_gameElems[col][row]->getNumber() == 0) {
                 if (tmpEmptyCellNum == randomIndex) {
                     CCLOG("randomIndex: %d", randomIndex);
-                    _gameElems[col][row] = GameElement::create();
+                    _gameElems[col][row]->setIsNew(true);
                     _gameElems[col][row]->setNumber(number);
-                    _gameElems[col][row]->setPos(Vec2(col, row));
-                    _gamefield->addChild(_gameElems[col][row]);
                 }
                 tmpEmptyCellNum ++;
             }
@@ -192,6 +190,9 @@ void GameField::moveLeft()
             // only not empty cell need move
             if (_gameElems[col][row]->getNumber() > 0) {
                 
+                GameElement *fromElem = _gameElems[col][row]->copy();
+                GameElement *toElem = nullptr;
+                
                 int innerCol = col;
                 for (; innerCol>0; innerCol--) {
                     
@@ -199,6 +200,7 @@ void GameField::moveLeft()
                     if (_gameElems[innerCol-1][row]->getNumber() == 0 ||
                         (_gameElems[innerCol-1][row]->getNumber() == _gameElems[innerCol][row]->getNumber()))
                     {
+                        toElem = _gameElems[innerCol-1][row]->copy();
                         moveElem(_gameElems[innerCol][row], _gameElems[innerCol-1][row]);
                         
                     }else{
@@ -207,7 +209,7 @@ void GameField::moveLeft()
                     
                 }// the cell is moved left, from [col][row] -> [innerCol][row]
              
-                moveAnimation(row, col, row, innerCol);
+                moveAnimation(fromElem, toElem);
             }
         }
     }
@@ -224,6 +226,9 @@ void GameField::moveRight()
             // only not empty cell needs move
             if (_gameElems[col][row]->getNumber() > 0) {
                 
+                GameElement *fromElem = _gameElems[col][row]->copy();
+                GameElement *toElem = nullptr;
+                
                 int innerCol = col;
                 for (; innerCol<DIMENSION-1; innerCol++) {
                     
@@ -231,6 +236,7 @@ void GameField::moveRight()
                     if (_gameElems[innerCol+1][row]->getNumber() == 0 ||
                         (_gameElems[innerCol+1][row]->getNumber() == _gameElems[innerCol][row]->getNumber()))
                     {
+                        toElem = _gameElems[innerCol+1][row]->copy();
                         moveElem(_gameElems[innerCol][row], _gameElems[innerCol+1][row]);
                         
                     }else{
@@ -239,7 +245,7 @@ void GameField::moveRight()
                     
                 }// the cell is moved right, from [col][row]->[innerCol][row]
                 
-                moveAnimation(row, col, row, innerCol);
+                moveAnimation(fromElem, toElem);
             }
         }
     }
@@ -255,6 +261,9 @@ void GameField::moveUp()
             // only not empty cell needs move
             if (_gameElems[col][row]->getNumber() > 0) {
                 
+                GameElement *fromElem = _gameElems[col][row]->copy();
+                GameElement *toElem = nullptr;
+                
                 int innerRow = row;
                 for (; innerRow>0; innerRow--) {
                     
@@ -262,6 +271,7 @@ void GameField::moveUp()
                     if (_gameElems[col][innerRow-1]->getNumber() == 0 ||
                         (_gameElems[col][innerRow-1]->getNumber() == _gameElems[col][innerRow]->getNumber()))
                     {
+                        toElem = _gameElems[col][innerRow-1]->copy();
                         moveElem(_gameElems[col][innerRow], _gameElems[col][innerRow-1]);
                         
                     }else{
@@ -269,7 +279,7 @@ void GameField::moveUp()
                     }
                 } // the cell is moved up, from [col][row] -> [col][innerRow]
                 
-                moveAnimation(row, col, innerRow, col);
+                moveAnimation(fromElem, toElem);
             }
         }
     }
@@ -285,6 +295,9 @@ void GameField::moveDown()
             // only not empty cell needs move
             if (_gameElems[col][row]->getNumber() > 0) {
                 
+                GameElement *fromElem = _gameElems[col][row]->copy();
+                GameElement *toElem = nullptr;
+                
                 int innerRow = row;
                 for (; innerRow<DIMENSION-1; innerRow++) {
                     
@@ -292,6 +305,7 @@ void GameField::moveDown()
                     if (_gameElems[col][innerRow+1]->getNumber() == 0 ||
                         (_gameElems[col][innerRow+1]->getNumber() == _gameElems[col][innerRow]->getNumber()))
                     {
+                        toElem = _gameElems[col][innerRow+1]->copy();
                         moveElem(_gameElems[col][innerRow], _gameElems[col][innerRow+1]);
                         
                     }else{
@@ -300,43 +314,36 @@ void GameField::moveDown()
                     
                 } // the cell is moved down, from [col][row] -> [col][innerRow]
                 
-                moveAnimation(row, col, innerRow, col);
+                moveAnimation(fromElem, toElem);
             }
         }
     }
 }
 
-void GameField::moveAnimation(int fromRow, int fromCol, int toRow, int toCol)
+void GameField::moveAnimation(GameElement *fromElem, GameElement *toElem)
 {
-    if (!_isMoved) {
+    if (!_isMoved || !fromElem || !toElem) {
         return;
     }
+    
+    _gamefield->addChild(fromElem, 10);
+    _gamefield->addChild(toElem, 9);
+    
+    int toCol = toElem->getPos().x;
+    int toRow = toElem->getPos().y;
     _gameElems[toCol][toRow]->setVisible(false);
     
-    GameElement *emptyElem = GameElement::create();
-    emptyElem->_isNew = false;
-    emptyElem->setNumber(0);
-    emptyElem->setPos(_gameElems[toCol][toRow]->getPos());
-    _gamefield->addChild(emptyElem, 10);
-    
-    GameElement *aniElem = GameElement::create();
-    aniElem->_isNew = false;
-    aniElem->setNumber(_gameElems[toCol][toRow]->getNumber()/(_isMerged ? 2 : 1));
-    aniElem->setPos(_gameElems[fromCol][fromRow]->getPos());
-    _gamefield->addChild(aniElem);
-    
-    Vec2 deltaPos = _gameElems[toCol][toRow]->getPos() - _gameElems[fromCol][fromRow]->getPos();
-    Vec2 deltaDis = Vec2(deltaPos.x * aniElem->getSideLen(), -1.0 * deltaPos.y * aniElem->getSideLen());
+    Vec2 deltaPos = toElem->getPos() - fromElem->getPos();
+    Vec2 deltaDis = Vec2(deltaPos.x * fromElem->getSideLen(), -1.0 * deltaPos.y * fromElem->getSideLen());
     
 
     auto move = MoveBy::create(MoveAnimationTime, deltaDis);
-    auto show = Show::create();
-    auto toElemAction = TargetedAction::create(_gameElems[toCol][toRow], show);
+    auto targetAction = TargetedAction::create(_gameElems[toCol][toRow], Show::create());
     
-    aniElem->runAction(Sequence::create(move,
-                                        toElemAction,
-                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, aniElem)),
-                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, emptyElem)),
+    fromElem->runAction(Sequence::create(move,
+                                         targetAction,
+                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, fromElem)),
+                                        CallFunc::create(CC_CALLBACK_0(Node::removeFromParent, toElem)),
                                         NULL));
     
 }

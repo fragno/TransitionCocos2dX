@@ -12,7 +12,7 @@ GameElement::GameElement()
 : _sideLen(0)
 , _number(0)
 , _isMerged(false)
-, _isNew(true)
+, _isNew(false)
 , _pos(-1, -1)
 {
 }
@@ -76,6 +76,18 @@ bool GameElement::isEmpty()
     return _number == 0 ? true : false;
 }
 
+GameElement *GameElement::copy()
+{
+    GameElement *elem = GameElement::create();
+    elem->setIsMerged(_isMerged);
+    elem->setSideLen(_sideLen);
+    elem->setIsNew(_isNew);
+    elem->setNumber(_number);
+    elem->setPos(_pos);
+    
+    return elem;
+}
+
 #pragma mark -
 #pragma mark - setter && getter
 
@@ -92,7 +104,14 @@ void GameElement::setNumber(int number)
         }else{
             _numberLabel->setVisible(true);
             _numberLabel->setString(std::to_string(_number));
-            _elem->setColor(Color3B((_number+10)%128, ((_number+10)*2)%128, ((_number+10)*3)%128));
+            _elem->setColor(Color3B((_number+50)%128, ((_number+30))%128, ((_number+10))%128));
+            
+            // add animation
+            if (_isNew) {
+                auto action = Sequence::createWithTwoActions(ScaleTo::create(0, 0), ScaleTo::create(0.3f, 1));  //在0.3秒内从小缩放到大
+                this->runAction(action);
+                _isNew = false;
+            }
         }
     }
 }
@@ -100,6 +119,11 @@ void GameElement::setNumber(int number)
 int GameElement::getNumber()
 {
     return _number;
+}
+
+void GameElement::setSideLen(float sideLen)
+{
+    _sideLen = sideLen;
 }
 
 float GameElement::getSideLen()
@@ -113,13 +137,6 @@ void GameElement::setPos(Vec2 pos)
     if (_pos != pos) {
         _pos.set(pos);
         this->setPosition(Point((_pos.x+0.5)*_sideLen + ElemSpace * (_pos.x + 1), (3-_pos.y+0.5)*_sideLen + ElemSpace * (3 - _pos.y + 1)));
-        
-        // add animation
-        if (_isNew && _number != 0) {
-            auto action = Sequence::createWithTwoActions(ScaleTo::create(0, 0), ScaleTo::create(0.3f, 1));  //在0.3秒内从小缩放到大
-            this->runAction(action);
-            _isNew = false;
-        }
     }
 }
 
@@ -138,4 +155,8 @@ void GameElement::setIsMerged(bool isMerged)
     _isMerged = isMerged;
 }
 
+void GameElement::setIsNew(bool isNew)
+{
+    _isNew = isNew;
+}
 

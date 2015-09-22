@@ -53,7 +53,7 @@ public:
 private:
     void createElemArray(void);
     bool addRandomElem();
-    void moveAnimation(int fromRow, int fromCol, int toRow, int toCol);
+    void moveAnimation(GameElement *fromElem, GameElement *toElem);
     
     void moveElem(GameElement *elemFrom, GameElement *elemTo);
     void mergeElems(GameElement *elemFrom, GameElement *elemTo);
