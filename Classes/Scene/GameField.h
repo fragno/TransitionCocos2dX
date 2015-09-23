@@ -53,7 +53,6 @@ public:
 private:
     void createElemArray(void);
     bool addRandomElem();
-    void moveAnimation(GameElement *fromElem, GameElement *toElem);
     
     void moveElem(GameElement *elemFrom, GameElement *elemTo);
     void mergeElems(GameElement *elemFrom, GameElement *elemTo);
@@ -67,6 +66,7 @@ private:
     
 private:
     GameElement *_gameElems[DIMENSION][DIMENSION];
+    GameElement *_gameElemsAni[DIMENSION][DIMENSION];
     ElemStatus _emptyElemIndexes[DIMENSION][DIMENSION];
     
     MoveDirection _moveDireciton;

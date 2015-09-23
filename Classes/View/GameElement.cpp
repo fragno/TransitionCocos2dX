@@ -42,7 +42,7 @@ bool GameElement::init()
     _elem->setAnchorPoint(Vec2(0, 0));
     
     // add number
-    _numberLabel = Label::createWithTTF("","fonts/Marker Felt.ttf", 50);
+    _numberLabel = Label::createWithTTF("","fonts/Marker Felt.ttf", 90);
     _numberLabel->setAnchorPoint(Vec2(0.5, 0.5));
     _numberLabel->setPosition(_elem->getContentSize().width/2, _elem->getContentSize().height/2);
     _numberLabel->setTextColor(Color4B::ORANGE);
@@ -80,7 +80,6 @@ GameElement *GameElement::copy()
 {
     GameElement *elem = GameElement::create();
     elem->setIsMerged(_isMerged);
-    elem->setSideLen(_sideLen);
     elem->setIsNew(_isNew);
     elem->setNumber(_number);
     elem->setPos(_pos);
@@ -104,11 +103,11 @@ void GameElement::setNumber(int number)
         }else{
             _numberLabel->setVisible(true);
             _numberLabel->setString(std::to_string(_number));
-            _elem->setColor(Color3B((_number+50)%128, ((_number+30))%128, ((_number+10))%128));
+            _elem->setColor(Color3B((_number+50)%128, ((_number*_number+30))%128, ((_number*_number*_number+10))%128));
             
             // add animation
             if (_isNew) {
-                auto action = Sequence::createWithTwoActions(ScaleTo::create(0, 0), ScaleTo::create(0.3f, 1));  //在0.3秒内从小缩放到大
+                auto action = Sequence::createWithTwoActions(ScaleTo::create(0, 0), ScaleTo::create(0.2f, 1));  //在0.3秒内从小缩放到大
                 this->runAction(action);
                 _isNew = false;
             }
